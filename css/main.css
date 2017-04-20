@@ -6,21 +6,24 @@ body {
   line-height: 1.5;
   font-weight: 300;
   background-color: #fdfdfd;
-  padding: 75px 150px;
 }
 
-table, td, th {    
+.content {
+  padding: 0px 80%;
+}
+
+.content table, td, th {    
     border: 1px solid #ddd;
     text-align: left;
 }
 
-table {
+.content table {
     border-collapse: collapse;
     width: 100%;
 }
 
-th, td {
+.content th, td {
     padding: 15px;
 }
 
-tr:nth-child(even){background-color: #f2f2f2}
+.content tr:nth-child(even){background-color: #f2f2f2}
