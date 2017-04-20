@@ -9,21 +9,21 @@ body {
 }
 
 .content {
-  padding: 0px 80%;
+  padding: 0px 100px;
 }
 
-.content table, td, th {    
+table, td, th {    
     border: 1px solid #ddd;
     text-align: left;
 }
 
-.content table {
+table {
     border-collapse: collapse;
     width: 100%;
 }
 
-.content th, td {
+th, td {
     padding: 15px;
 }
 
-.content tr:nth-child(even){background-color: #f2f2f2}
+tr:nth-child(even){background-color: #f2f2f2}
