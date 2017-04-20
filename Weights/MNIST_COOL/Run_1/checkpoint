@@ -1,0 +1,3 @@
+model_checkpoint_path: "MNIST_COOL_Run_6_LAST"
+all_model_checkpoint_paths: "MNIST_COOL_Run_6_BEST"
+all_model_checkpoint_paths: "MNIST_COOL_Run_6_LAST"
