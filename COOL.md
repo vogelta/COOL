@@ -1,4 +1,3 @@
-
 # The Competitive Overcomplete Output Layer
 
 [**GitHub**](https://github.com/vogelta/vogelta.github.io)
@@ -11,6 +10,7 @@ The idea behind the COOL is that instead of there being just one unit for each l
 ![The COOL](/assets/COOL_Figure)
  
 *Adapted from [Kardan and Stanley](https://arxiv.org/abs/1609.02226). On the left, the classic softmax layer, and on the right, the COOL. The dots are the units of the fully-connected layer, and the blue box represents the softmax function. In the COOL, there are multiple units for each label (grouped in yellow boxes) which are combined after the softmax operation into a single final score.*
+
 ---
 
 A critical point to note about how the COOL works is that the geometric mean (and the minimum) is maximized for a given sum when all inputs are equal. Thus, at the point directly after the softmax function, a flawless classifier should assign zero scores to all units except to the \\(M\\) units representing the true label, which score \\(\frac{1}{M}\\) each. The geometric mean is then also \\(\frac{1}{M}\\), which gets multiplied by \\(M\\) for a perfect final output of 1. This point also reveals the reason why the arithmetic mean cannot be used instead: it does not encourage these outputs to be equal, which ruins any benefit over the standard softmax.
@@ -37,6 +37,7 @@ Clearly, this scheme introduces extra parameters and computation over the softma
 ![Loss on MNIST](/assets/MNIST_Loss) ![Accuracy on CIFAR-10](/assets/CIFAR_Accuracy) 
 
 *In experiments with similar networks trained using COOL and softmax outputs, the COOL clearly performed better (MinCOOL refers to a COOL where the minimum is used in place of geometric mean). The COOL and MinCOOL took about 5%/15% per batch longer to train than softmax, respectively. The original paper also reported improved accuracy on CIFAR-100 with the COOL.* Datasets: [MNIST](http://yann.lecun.com/exdb/mnist/) / [CIFAR](https://www.cs.toronto.edu/~kriz/cifar.html)
+
 ---
 
 ## The COOL As A Regularizer
@@ -51,6 +52,7 @@ When considering COOL as a regularizer compared to a softmax output layer, it mi
 | **Softmax Output** | 0.6992  | 0.7381  | 0.7472  |
 | **COOL Output**    | 0.7041  | 0.7413  | 0.7453  |
 | **MinCOOL Output** | 0.7022  | 0.7386  | 0.7485  |
+
 ---
 
 During training, the COOL's units learn to return closely-matched outputs (in order to score \\(\frac{1}{M}\\) when true, and 0 when false). Assuming the training set is representative enough that the outputs are also similar on a new example taken from the same distribution, swapping \\(M\\) different-but-very-similar units for \\(M\\) copies of the same unit does not change the network's behaviour much - and a COOL with identical units is equivalent to a softmax layer using the same fully-connected layer weights for each label (with a correction term added to the biases). The layers share an objective - minimizing cross-entropy loss - meaning a COOL that has become approximately like a softmax layer is also drawn to a softmax-layer local minimum<a href="#note4" id="note4ref"><sup>4</sup></a>, so (as observed) the two layers are expected to produce similar performance when given the same features.
@@ -60,6 +62,7 @@ In order to explain the regularization and transfer-learning results, it must be
 ---
 ![Dead units on CIFAR during training](/assets/CIFAR_Dead) ![Activity of MNIST units](/assets/MNIST_Activity)
 *The dead-unit effect is stronger for MinCOOL (minimum) than regular COOL (geometric mean). As well as the completely-dead units, there is also a 'tail' of many units that are very rarely activated: on the MNIST dataset, 102 (out of 1024) of the MinCOOL network's penultimate-layer units are greater than zero on between one and ten (out of 55000) training-set examples.*
+
 ---
 
 ### The 'Dead Units'
