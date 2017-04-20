@@ -24,6 +24,7 @@ Some pretrained models on the MNIST dataset are included with their parameters, 
 ### Trained Models
 
 Includes Parameters, Weights (highest-scoring-step weights only) and Logs for: <br>
+
 (test-set accuracy in parentheses)
 
 - 'MNIST_Softmax' - (0.9930)
