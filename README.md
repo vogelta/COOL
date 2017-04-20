@@ -23,7 +23,7 @@ Some pretrained models on the MNIST dataset are included with their parameters, 
 
 ### Trained Models
 
-Includes Parameters, Weights (highest-scoring-step weights only) and Logs for: <br>
+Includes Parameters, Weights (highest-scoring-step weights only) and Logs for:
 
 (test-set accuracy in parentheses)
 
