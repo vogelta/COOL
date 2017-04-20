@@ -6,6 +6,9 @@ body {
   line-height: 1.5;
   font-weight: 300;
   background-color: #fdfdfd;
+}
+
+.content {
   padding: 25px 150px;
 }
 
