@@ -61,6 +61,7 @@ In order to explain the regularization and transfer-learning results, it must be
 
 ---
 ![Dead units on CIFAR during training](https://github.com/vogelta/vogelta.github.io/raw/master/assets/CIFAR_Dead.png) ![Activity of MNIST units](https://github.com/vogelta/vogelta.github.io/raw/master/assets/MNIST_Activity.png)
+
 *The dead-unit effect is stronger for MinCOOL (minimum) than regular COOL (geometric mean). As well as the completely-dead units, there is also a 'tail' of many units that are very rarely activated: on the MNIST dataset, 102 (out of 1024) of the MinCOOL network's penultimate-layer units are greater than zero on between one and ten (out of 55000) training-set examples.*
 
 ---
@@ -105,31 +106,31 @@ As the Network Trimming paper also showed, making the network smaller represents
 
 ---
 
-These tables show for each network the numbers of dead units (on the training set) created, how many weights could be forgotten as a result of removing those units, and the test-set accuracy. The COOL networks are presented as having been changed to use a softmax layer (using just the first of its trained units for each label), so the total network size is the same as in the softmax case.
+*These tables show for each network the numbers of dead units (on the training set) created, how many weights could be forgotten as a result of removing those units, and the test-set accuracy. The COOL networks are presented as having been changed to use a softmax layer (using just the first of its trained units for each label), so the total network size is the same as in the softmax case.*
 
-Layer 8 of the CIFAR networks and Layer 5 of the MNIST networks are the layers just before the output layer. Layer 2 in the MNIST networks is the second convolutional layer. No other layers contained weights that were able to be safely forgotten.
+*Layer 8 of the CIFAR networks and Layer 5 of the MNIST networks are the layers just before the output layer. Layer 2 in the MNIST networks is the second convolutional layer. No other layers contained weights that were able to be safely forgotten.*
 
 **_CIFAR_**
 
-| Output Layer | Layer-8 Dead Units | Weights Forgotten | Percent Reduction | Accuracy |
+| Output Layer | Layer-8 Dead Units | Weights Forgotten | % Reduction | Accuracy |
 | ------- | ---: | ------: | -----: | -----: |
 | Total   | 512  | 3230778 | -      | -      |
-| Softmax | 10   | 62440   | 1.93%  | 0.7020 |
-| COOL    | 35   | 215425  | 6.67%  | 0.7396 |
-| MinCOOL | 161  | 990995  | 30.67% | 0.7457 |
+| **Softmax** | 10   | 62440   | 1.93%  | 0.7020 |
+| **COOL**    | 35   | 215425  | 6.67%  | 0.7396 |
+| **MinCOOL** | 161  | 990995  | 30.67% | 0.7457 |
 
 **_MNIST_**
 
-| Output Layer | Layer-5 Dead Units | Layer-2 Dead Channels | Weights Forgotten | Percent Reduction | Accuracy |
+| Output Layer | Layer-5 Dead Units | Layer-2 Dead Channels | Weights Forgotten | % Reduction | Accuracy |
 | ------- | ---: | ---: | ------: | -----: | -----: |
 | Total   | 1024 | 64   | 3274634 | -      | -      |
-| Softmax | 5    | 0    | 15735   | 0.48%  | 0.9930 |
-| COOL    | 166  | 0    | 522402  | 15.95% | 0.9942 |
-| MinCOOL | 407  | 10   | 1591169 | 48.59% | 0.9938 |
+| **Softmax** | 5    | 0    | 15735   | 0.48%  | 0.9930 |
+| **COOL**    | 166  | 0    | 522402  | 15.95% | 0.9942 |
+| **MinCOOL** | 407  | 10   | 1591169 | 48.59% | 0.9938 |
 
 ---
 
-Aside from requiring rectifier nonlinearities, and preventing the use of batch normalization, another significant disadvantage of the COOL as a model-compression technique is that there are only rough ways to control the final model size - by changing the initial size, and perhaps the degree-of-overcompleteness - and it is difficult to guess beforehand how large the model will end up. Furthermore, in this domain the COOL does not compare in effectiveness to techniques designed with compression as an explicit goal. On the other hand, given a standard softmax network, applying the COOL is very simple - no other changes to the architecture or training setup are needed - and introduces few new hyperparameters.
+Aside from requiring the ReLU, and preventing the use of batch normalization, another significant disadvantage of the COOL as a model-compression technique is that there are only rough ways to control the final model size - by changing the initial size, and perhaps the degree-of-overcompleteness - and it is difficult to guess ahead of time how large the model will end up. Furthermore, in this domain the COOL does not compare in effectiveness to techniques designed with compression as an explicit goal. On the other hand, given a standard softmax network, applying the COOL is very simple - no other changes to the architecture or training setup are needed - and introduces few new hyperparameters.
 
 ## Is It Useful?
 
@@ -137,20 +138,24 @@ The COOL's performance as a regularizer - both in the examples described here, a
 
 In the end, there are plenty of other methods for regularization and plenty of other methods for model-compression, many of which are compatible with each other. Being able to do both at once is convenient, but not inherently better than a combination of approaches. Where the COOL shone is as a challenge to some at-first-glance logical assumptions in softmax layers and neural network training: allowing a less-than-one sum of label probabilities led to better scores overall, and dead units were a sign of better-performing features - and it has to be said that moving from one- to multiple-units-per-concept (although they are still combined into one final score) is particularly appealing for those who like their machine learning to come with (tenuous) neuroscience analogies. 
 
+
 ---
 
-<a id="note1" href="#note1ref"><sup>1</sup></a> Minimizing cross-entropy loss is equivalent to maximizing the probability assigned to the true class for each example, so having the 'probabilities' sum to less than one is valid - it simply represents a handicap against achieving low loss. Scaling up the scores to sum to one might seem like a natural thing to do, except that it ruins the regularizer effect of the COOL - so they should not be scaled during training, only during testing/inference.
 
-<a id="note2" href="#note2ref"><sup>2</sup></a> In the [original paper](https://arxiv.org/abs/1609.02226), the authors suggested that the lower sum-of-scores could combat 'overgeneralization', as it removes the assumption that any input (including, for example, random noise) must lie somewhere amongst the output labels. However, much as would happen if a 'none-of-the-above' output was added without changing the dataset, the network learns to avoid as strongly as possible the option to give out lower scores - the COOL network trained on the MNIST dataset returned scores totalling more than 0.995 on random inputs.
+*<a id="note1" href="#note1ref"><sup>1</sup></a> Minimizing cross-entropy loss is equivalent to maximizing the probability assigned to the true class for each example, so having the 'probabilities' sum to less than one is valid - it simply represents a handicap against achieving low loss. Scaling up the scores to sum to one might seem like a natural thing to do, except that it ruins the regularizer effect of the COOL - so they should not be scaled during training, only during testing/inference.*
 
-<a id="note3" href="#note3ref"><sup>3</sup></a> The geometric mean and minimum are the most appealing options for combining the COOL's units into a single score, because they have simple gradients (unlike the forms of the [generalized mean](https://en.wikipedia.org/wiki/Generalized_mean) that lie between these two), while also preserving the network's ability - in theory - to express any final probability distribution over the labels: simply taking the product of the units, for example, is unable to return final scores of 0.5 on two labels at the same time.
+*<a id="note2" href="#note2ref"><sup>2</sup></a> In the [original paper](https://arxiv.org/abs/1609.02226), the authors suggested that the lower sum-of-scores could combat 'overgeneralization', as it removes the assumption that any input (including, for example, random noise) must lie somewhere amongst the output labels. However, much as would happen if a 'none-of-the-above' output was added without changing the dataset, the network learns to avoid as strongly as possible the option to give out lower scores - the COOL network trained on the MNIST dataset returned scores totalling more than 0.995 on random inputs.*
 
-<a id="note4" href="#note4ref"><sup>4</sup></a> It may be that the COOL and the softmax layer are biased toward different softmax local minima, given the way training the COOL involves reaching a 'consensus' between the random starting initializations of the units within each label. But it is not likely to make a difference: theory and empirical [evidence](https://arxiv.org/abs/1412.0233) suggest that most local minima of large multilayer neural networks have similar test-set performance.
+*<a id="note3" href="#note3ref"><sup>3</sup></a> The geometric mean and minimum are the most appealing options for combining the COOL's units into a single score, because they have simple gradients (unlike the forms of the [generalized mean](https://en.wikipedia.org/wiki/Generalized_mean) that lie between these two), while also preserving the network's ability - in theory - to express any final probability distribution over the labels: simply taking the product of the units, for example, is unable to return final scores of 0.5 on two labels at the same time.*
 
-<a id="note5" href="#note5ref"><sup>5</sup></a> For example, when all the weights connecting the unit in question to the true-label COOL outputs are equal: changing the unit's value would have no effect on loss (under the assumption that the 'false' units are already scoring zero), so the curve of loss-versus-value is flat.
+*<a id="note4" href="#note4ref"><sup>4</sup></a> It may be that the COOL and the softmax layer are biased toward different softmax local minima, given the way training the COOL involves reaching a 'consensus' between the random starting initializations of the units within each label. But it is not likely to make a difference: theory and empirical [evidence](https://arxiv.org/abs/1412.0233) suggest that most local minima of large multilayer neural networks have similar test-set performance.*
 
-<a id="note6" href="#note6ref"><sup>6</sup></a> This is unlike what happens using the softmax layer, where these examples (having the same label) will point in the same direction: both upward, if increasing the unit favours the true output more than the false ones, or both downward, if it does not.
+*<a id="note5" href="#note5ref"><sup>5</sup></a> For example, when all the weights connecting the unit in question to the true-label COOL outputs are equal: changing the unit's value would have no effect on loss (under the assumption that the 'false' units are already scoring zero), so the curve of loss-versus-value is flat.*
 
-<a id="note7" href="#note7ref"><sup>7</sup></a> Training a COOL using the [LeakyReLU](https://en.wikipedia.org/wiki/Rectifier_(neural_networks)#Leaky_ReLUs) activation created almost as many of its 'dead' (always below zero) and 'nearly-dead' (above zero on very few examples) units as a ReLU version. With the [ELU](https://arxiv.org/abs/1511.07289) activation, the slope gradually decreases for inputs below zero. Training a COOL network using this function created units in varying stages of 'dying': some never took a value above -0.9 (the minimum possible value being -1), while others had their average value somewhere closer to zero.
+*<a id="note6" href="#note6ref"><sup>6</sup></a> This is unlike what happens using the softmax layer, where these examples (having the same label) will point in the same direction: both upward, if increasing the unit favours the true output more than the false ones, or both downward, if it does not.*
 
-<a id="note8" href="#note8ref"><sup>8</sup></a> In practice, the weight vectors will not be so finely balanced as to be linear combinations of each other, and so the dimension of this null space is \\(N-M+2\\), where \\(N\\) is the number of units in the penultimate layer (i.e. not counting the biases), and \\(M\\) is the degree-of-overcompleteness for that label.
+*<a id="note7" href="#note7ref"><sup>7</sup></a> Training a COOL using the [LeakyReLU](https://en.wikipedia.org/wiki/Rectifier_(neural_networks)#Leaky_ReLUs) activation created almost as many of its 'dead' (always below zero) and 'nearly-dead' (above zero on very few examples) units as a ReLU version. With the [ELU](https://arxiv.org/abs/1511.07289) activation, the slope gradually decreases for inputs below zero. Training a COOL network using this function created units in varying stages of 'dying': some never took a value above -0.9 (the minimum possible value being -1), while others had their average value somewhere closer to zero.*
+
+*<a id="note8" href="#note8ref"><sup>8</sup></a> In practice, the weight vectors will not be so finely balanced as to be linear combinations of each other, and so the dimension of this null space is \\(N-M+2\\), where \\(N\\) is the number of units in the penultimate layer (i.e. not counting the biases), and \\(M\\) is the degree-of-overcompleteness for that label.*
+
+
