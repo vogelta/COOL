@@ -1,5 +1,7 @@
 <head>
-    <title>"The Competitive Overcomplete Output Layer"</title>
+    <title>The Competitive Overcomplete Output Layer</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://github.com/vogelta/vogelta.github.io/css/main.css">
     <!-- Google fonts -->
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
     <!-- mathjax -->
@@ -11,7 +13,7 @@
 
 The widely-used softmax output layer for neural network classifiers is composed of a fully-connected layer with one output for each potential label, followed by the [softmax function](https://en.wikipedia.org/wiki/Softmax_function). The properties that make this layer a default choice include that it has a simple derivative and that it produces nonnegative scores that sum to one - a probability distribution over the mutually-exclusive output labels - meaning that the network can be trained by minimizing the [cross-entropy loss](https://en.wikipedia.org/wiki/Cross_entropy). The Competitive Overcomplete Output Layer introduced in [Kardan and Stanley](https://arxiv.org/abs/1609.02226), also has those appealing properties - except that its scores have a sum less-than-or-equal-to one, meaning they technically don't define a probability distribution. This doesn't prevent the use of the cross-entropy loss<a href="#note1" id="note1ref"><sup>1</sup></a>, however, so a network using a softmax output layer can still work when using the COOL instead. But why would the COOL be used instead, when it requires extra parameters and extra computation<a href="#note2" id="note2ref"><sup>2</sup></a>? Despite those extra parameters, the COOL actually acts as a [regularizer](https://en.wikipedia.org/wiki/Regularization_(mathematics)) - and moreover, one with an interesting action which (when using rectifier nonlinearities) can be used to define a final model that is not only more accurate, but also smaller than the equivalent softmax network.
 
-The idea behind the COOL is that instead of there being just one unit for each label in the network's final fully-connected layer, each label can have multiple units corresponding to it - hence, 'Overcomplete' (how many of these units there are for some label is termed its 'Degree-Of-Overcompleteness'). The softmax function is then applied across all of these units ('Competitive'), just as it is in the standard layer. The resulting scores representing each label are then combined into a single value by taking their geometric mean, or alternatively, their minimum<a href="#note3" id="note3ref"><sup>3</sup></a>. Finally, each of these means is multiplied by the corresponding degree-of-overcompleteness, to compensate for its share of the post-softmax distribution having been spread across that many units.
+The idea behind the COOL is that, instead of there being just one unit for each label in the network's final fully-connected layer, each label can have multiple units corresponding to it - hence, 'Overcomplete' (how many of these units there are for some label is termed its 'Degree-Of-Overcompleteness'). The softmax function is then applied across all of these units ('Competitive'), just as it is in the standard layer. The resulting scores representing each label are then combined into a single value by taking their geometric mean, or alternatively, their minimum<a href="#note3" id="note3ref"><sup>3</sup></a>. Finally, each of these means is multiplied by the corresponding degree-of-overcompleteness, to compensate for its share of the post-softmax distribution having been spread across that many units.
 
 ---
 ![The COOL](https://github.com/vogelta/vogelta.github.io/raw/master/assets/COOL_Figure.png)
@@ -20,13 +22,13 @@ The idea behind the COOL is that instead of there being just one unit for each l
 
 ---
 
-A critical point to note about how the COOL works is that the geometric mean (and the minimum) is maximized for a given sum when all inputs are equal. Thus, at the point directly after the softmax function, a flawless classifier should assign zero scores to all units except to the \\(M\\) units representing the true label, which score \\(\frac{1}{M}\\) each. The geometric mean is then also \\(\frac{1}{M}\\), which gets multiplied by \\(M\\) for a perfect final output of 1. This point also reveals the reason why the arithmetic mean cannot be used instead: it does not encourage these outputs to be equal, which ruins any benefit over the standard softmax.
+A critical point to note is that the geometric mean (and the minimum) is maximized for a given sum when all inputs are equal. Thus, at the point directly after the softmax function, a flawless classifier should assign zero scores to all units except to the \\(M\\) units representing the true label, which score \\(\frac{1}{M}\\) each. The geometric mean is then also \\(\frac{1}{M}\\), which gets multiplied by \\(M\\) for a perfect final output of 1. This point also reveals the reason why the arithmetic mean cannot be used instead: it does not encourage these outputs to be equal, which ruins any benefit over the standard softmax.
 
 ---
 
 **_Gradients on the Output-Layer Units_**
 
-_\\(z_i\\) is a unit of the fully-connected layer, with a value of \\(y_i\\) after the softmax operation_
+*\\(z_i\\) is a unit of the fully-connected layer, with a value of \\(y_i\\) after the softmax operation*
 
 | Layer   | Gradient |
 | ------- | -------- |
@@ -43,11 +45,11 @@ Clearly, this scheme introduces extra parameters and computation over the softma
 ---
 ![Loss on MNIST](https://github.com/vogelta/vogelta.github.io/raw/master/assets/MNIST_Loss.png) ![Accuracy on CIFAR-10](https://github.com/vogelta/vogelta.github.io/raw/master/assets/CIFAR_Accuracy.png) 
 
-*In experiments with similar networks trained using COOL and softmax outputs, the COOL clearly performed better (MinCOOL refers to a COOL where the minimum is used in place of geometric mean). The COOL and MinCOOL took about 5%/15% per batch longer to train than softmax, respectively. The original paper also reported improved accuracy on CIFAR-100 with the COOL.* Datasets: [MNIST](http://yann.lecun.com/exdb/mnist/) / [CIFAR](https://www.cs.toronto.edu/~kriz/cifar.html)
+*In experiments with similar networks trained using COOL and softmax outputs, the COOL clearly performed better (MinCOOL refers to a COOL where the minimum is used in place of geometric mean). The COOL and MinCOOL took about 5% / 15% per batch longer to train than softmax, respectively. The original paper also reported improved accuracy on CIFAR-100 with the COOL.* Datasets: [MNIST](http://yann.lecun.com/exdb/mnist/) / [CIFAR](https://www.cs.toronto.edu/~kriz/cifar.html)
 
 ---
 
-## The COOL As A Regularizer
+## The COOL as a Regularizer
 
 When considering COOL as a regularizer compared to a softmax output layer, it might seem intuitive that because the only differences in network architecture are at the final layer, that would be where the regularization effect occurs. But as transfer-learning experiments show, most of the improvement in fact comes from finding better features at the earlier layers: training a softmax output using pretrained COOL features achieves a result comparable to the COOL network, and vice versa a COOL output on the softmax features performs comparably to the original softmax network.
 
@@ -89,7 +91,7 @@ Because of the nonlinearity, the 'increase' gradient from the 0-valued example i
 
 On a larger (and less simplified) scale, this basic process can cause a unit which is only in the lower-slope region of the activation function<a href="#note7" id="note7ref"><sup>7</sup></a> on a few examples initially, to eventually be in that zone - at zero, when using the ReLU - on every single one: a dead unit. 
 
-### Why Does The MinCOOL Make More 'Dead Units'?
+### Why does the MinCOOL make more 'Dead Units'?
 
 Another thing to note in the way the dead units form, is that significantly more of them are created when using the minimum to combine the values of the COOL's units. As in the geometric-mean version, the best possible solution would return zero on all 'false' outputs in the COOL, and have equal 'true' outputs. However, unlike with the geometric mean, the gradients do not point toward this solution: at each step, they are solely in the direction of increasing the value of whichever of the 'true' units was the lowest. In most cases, increasing the lowest of the true outputs - at least, up to the point that it is no longer the lowest - is also increasing the overall geometric mean. Re-using the same 'actual' and 'most-balanced' values concept, the MinCOOL gradients will generally be pointing in the same directions as in the regular COOL.
 
