@@ -21,7 +21,7 @@ A critical point to note is that the geometric mean (and the minimum) is maximiz
 
 ---
 
-**_Gradients on the Output-Layer Units_**
+<strong>_Gradients on the Output-Layer Units_<strong>
 
 *\\(z_i\\) is a unit of the fully-connected layer, with a value of \\(y_i\\) after the softmax operation*
 
@@ -49,7 +49,7 @@ Clearly, this scheme introduces extra parameters and computation over the softma
 When considering COOL as a regularizer compared to a softmax output layer, it might seem intuitive that because the only differences in network architecture are at the final layer, that would be where the regularization effect occurs. But as transfer-learning experiments show, most of the improvement in fact comes from finding better features at the earlier layers: training a softmax output using pretrained COOL features achieves a result comparable to the COOL network, and vice versa a COOL output on the softmax features performs comparably to the original softmax network.
 
 ---
-**_Transfer-Learning Results on CIFAR-10_**
+<strong>_Transfer-Learning Results on CIFAR-10_<strong>
 
 |     | Softmax Features | COOL Features | MinCOOL Features |
 | :----------------: | :-----: | :-----: | :-----: |
@@ -114,7 +114,7 @@ As the Network Trimming paper also showed, making the network smaller represents
 
 *Layer 8 of the CIFAR networks and Layer 5 of the MNIST networks are the layers just before the output layer. Layer 2 in the MNIST networks is the second convolutional layer. No other layers contained weights that were able to be safely forgotten.*
 
-**_CIFAR_**
+<strong>_CIFAR_<strong>
 
 | Output Layer | Layer-8 Dead Units | Weights Forgotten | % Reduction | Accuracy |
 | ------- | ---: | ------: | -----: | -----: |
@@ -123,7 +123,7 @@ As the Network Trimming paper also showed, making the network smaller represents
 | **COOL**    | 35   | 215425  | 6.67%  | 0.7396 |
 | **MinCOOL** | 161  | 990995  | 30.67% | 0.7457 |
 
-**_MNIST_**
+<strong>_MNIST_<strong>
 
 | Output Layer | Layer-5 Dead Units | Layer-2 Dead Channels | Weights Forgotten | % Reduction | Accuracy |
 | ------- | ---: | ---: | ------: | -----: | -----: |
