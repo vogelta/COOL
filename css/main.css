@@ -6,10 +6,7 @@ body {
   line-height: 1.5;
   font-weight: 300;
   background-color: #fdfdfd;
-}
-
-.content {
-  padding: 0px 100px;
+  padding: 25px 150px;
 }
 
 table, td, th {    
@@ -26,4 +23,4 @@ th, td {
     padding: 15px;
 }
 
-tr:nth-child(even){background-color: #f2f2f2}
+tr:nth-child(odd){background-color: #f2f2f2}
