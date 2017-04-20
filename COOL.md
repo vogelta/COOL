@@ -44,7 +44,7 @@ Clearly, this scheme introduces extra parameters and computation over the softma
 
 ---
 
-## The COOL as a Regularizer
+### The COOL as a Regularizer
 
 When considering COOL as a regularizer compared to a softmax output layer, it might seem intuitive that because the only differences in network architecture are at the final layer, that would be where the regularization effect occurs. But as transfer-learning experiments show, most of the improvement in fact comes from finding better features at the earlier layers: training a softmax output using pretrained COOL features achieves a result comparable to the COOL network, and vice versa a COOL output on the softmax features performs comparably to the original softmax network.
 
@@ -105,7 +105,7 @@ Such a solution can be identified label-by-label, by taking the weight vectors (
 
 By moving the penultimate-layer representations of the training-set examples toward different null spaces, they become better separated by label, which improves their generalization performance. Also, these null spaces make it harder for the network to overfit to the training set: imagine an outlier example of label \\(A\\), which is placed in a region that truthfully should be classified as label \\(B\\). Realigning the null space of \\(A\\) closer to this example would make things worse for the rest of the \\(A\\) examples, so instead, the network must assign more of the post-softmax distribution to the \\(A\\) outputs in order to increase its score. If this outlier is closer the null space of \\(B\\) - such that \\(B\\)'s outputs are significantly more balanced than \\(A\\)'s - then \\(A\\)'s units need to take a significantly higher proportion of the total softmax output than they would have needed otherwise, for this example to be classified as \\(A\\). With a higher bar set against outliers, the COOL's test-set performance is improved.
 
-## Network Compression
+### Network Compression
 
 As the Network Trimming paper also showed, making the network smaller represents a goal in itself. Because the dead units always return zero, they can safely be removed from the network without changing the results: the network can ignore all computation associated to them, and all the weights going into and out of them can be forgotten. The biggest benefits can usually be found in shrinking the fully-connected layers near the final stages of the network - they usually contain the most weights - and indeed, this is where most of the COOL's dead units formed in practice. Because the same weights are used at every position for the filters in a convolutional layer, every one of those positions needs to be 'dead' before those weights can be forgotten without any risk. Also, as mentioned previously, the COOL's units for each label learn to produce almost the same outputs - which means by taking the weights of just one unit for each class and forgetting the rest (and using those weights in a normal softmax layer), the final trained COOL layer itself can be made smaller without greatly impacting performance.
 
@@ -137,7 +137,7 @@ As the Network Trimming paper also showed, making the network smaller represents
 
 Aside from requiring the ReLU, and preventing the use of batch normalization, another significant disadvantage of the COOL as a model-compression technique is that there are only rough ways to control the final model size - by changing the initial size, and perhaps the degree-of-overcompleteness - and it is difficult to guess ahead of time how large the model will end up. Furthermore, in this domain the COOL does not compare in effectiveness to techniques designed with compression as an explicit goal. On the other hand, given a standard softmax network, applying the COOL is very simple - no other changes to the architecture or training setup are needed - and introduces few new hyperparameters.
 
-## Is It Useful?
+### Is It Useful?
 
 The COOL's performance as a regularizer - both in the examples described here, and on the CIFAR-100 dataset in the original paper - did not approach state-of-the-art levels, although this was to be expected given the relatively simple networks it was applied atop of. Combining the COOL with other techniques such as [data augmentation](https://arxiv.org/abs/1609.08764) and applying it to more powerful networks would be expected to achieve more competitive results.
 
