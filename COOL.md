@@ -1,3 +1,10 @@
+<head>
+    <title>The Competitive Overcomplete Output Layer</title>
+    <!-- Google fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
+    <!-- mathjax -->
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
 # The Competitive Overcomplete Output Layer
 
 [**GitHub**](https://github.com/vogelta/vogelta.github.io)
