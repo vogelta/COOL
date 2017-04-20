@@ -6,6 +6,8 @@ The [Competitive Overcomplete Output Layer](https://arxiv.org/abs/1609.02226) is
       
 Some pretrained models on the MNIST dataset are included with their parameters, weights and logs.
 
+Email: vogel.timothya (at) gmail.com
+
 ### Prerequisites
 
 - Python 2.7.12 or Python 3.5+
@@ -20,6 +22,7 @@ Some pretrained models on the MNIST dataset are included with their parameters, 
 - ['LeNet' network structure](http://yann.lecun.com/exdb/lenet/)
 - [MNIST dataset](http://yann.lecun.com/exdb/mnist/)
 - [TensorFlow MNIST dataset loader](https://www.tensorflow.org/get_started/mnist/pros#load_mnist_data)
+- [CS231n GitHub Pages formatting](https://github.com/cs231n/cs231n.github.io)
 
 ### Trained Models
 

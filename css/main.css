@@ -1,0 +1,9 @@
+/* CSS based on https://github.com/cs231n/cs231n.github.io */
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 300;
+  background-color: #fdfdfd;
+}
