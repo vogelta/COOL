@@ -7,7 +7,7 @@ The widely-used softmax output layer for neural network classifiers is composed 
 The idea behind the COOL is that instead of there being just one unit for each label in the network's final fully-connected layer, each label can have multiple units corresponding to it - hence, 'Overcomplete' (how many of these units there are for some label is termed its 'Degree-Of-Overcompleteness'). The softmax function is then applied across all of these units ('Competitive'), just as it is in the standard layer. The resulting scores representing each label are then combined into a single value by taking their geometric mean, or alternatively, their minimum<a href="#note3" id="note3ref"><sup>3</sup></a>. Finally, each of these means is multiplied by the corresponding degree-of-overcompleteness, to compensate for its share of the post-softmax distribution having been spread across that many units.
 
 ---
-![The COOL](/assets/COOL_Figure.png)
+![The COOL](https://github.com/vogelta/vogelta.github.io/raw/master/assets/COOL_Figure.png)
  
 *Adapted from [Kardan and Stanley](https://arxiv.org/abs/1609.02226). On the left, the classic softmax layer, and on the right, the COOL. The dots are the units of the fully-connected layer, and the blue box represents the softmax function. In the COOL, there are multiple units for each label (grouped in yellow boxes) which are combined after the softmax operation into a single final score.*
 
@@ -34,7 +34,7 @@ No matter their present value, the gradients on the COOL's 'true' units in the f
 Clearly, this scheme introduces extra parameters and computation over the softmax layer. To be precise, the number of parameters in the output layer are increased by a factor of the average degree-of-overcompleteness - five units for each label means five times as many parameters, as each unit gets its own set of weights. The number of exponentiations and divisions required for the softmax function are increased similarly. In some applications (for example, in Natural Language Processing where the output may be one of 10,000 or more words) the standard softmax is already impractical to use: in such cases the COOL would not be appropriate. On the other hand, when the output layer is a relatively small part of the overall network then this disadvantage also becomes relatively smaller.
 
 ---
-![Loss on MNIST](/assets/MNIST_Loss.png) ![Accuracy on CIFAR-10](/assets/CIFAR_Accuracy.png) 
+![Loss on MNIST](https://github.com/vogelta/vogelta.github.io/raw/master/assets/MNIST_Loss.png) ![Accuracy on CIFAR-10](https://github.com/vogelta/vogelta.github.io/raw/master/assets/CIFAR_Accuracy.png) 
 
 *In experiments with similar networks trained using COOL and softmax outputs, the COOL clearly performed better (MinCOOL refers to a COOL where the minimum is used in place of geometric mean). The COOL and MinCOOL took about 5%/15% per batch longer to train than softmax, respectively. The original paper also reported improved accuracy on CIFAR-100 with the COOL.* Datasets: [MNIST](http://yann.lecun.com/exdb/mnist/) / [CIFAR](https://www.cs.toronto.edu/~kriz/cifar.html)
 
@@ -60,7 +60,7 @@ During training, the COOL's units learn to return closely-matched outputs (in or
 In order to explain the regularization and transfer-learning results, it must be that the COOL causes the earlier stages of the network to learn better features. However, when using a rectifier activation function (and NOT using [batch normalization](https://arxiv.org/abs/1502.03167)), at the outputs of intermediate layers there are in fact many more ['dead units'](https://en.wikipedia.org/wiki/Rectifier_(neural_networks)#Potential_problems) - units that are always 0, no matter the input - which would usually be taken as a sign of worse performance. The dead units do not carry any information about the input, so some of the potential capacity of the network is wasted. Dead units are most commonly encountered as a result of too-high learning rates, which lead to large updates that irrevocably 'kill' the unit. However, the dead units still appeared with COOL even when using lower learning rates and after gradient clipping.
 
 ---
-![Dead units on CIFAR during training](/assets/CIFAR_Dead.png) ![Activity of MNIST units](/assets/MNIST_Activity.png)
+![Dead units on CIFAR during training](https://github.com/vogelta/vogelta.github.io/raw/master/assets/CIFAR_Dead.png) ![Activity of MNIST units](https://github.com/vogelta/vogelta.github.io/raw/master/assets/MNIST_Activity.png)
 *The dead-unit effect is stronger for MinCOOL (minimum) than regular COOL (geometric mean). As well as the completely-dead units, there is also a 'tail' of many units that are very rarely activated: on the MNIST dataset, 102 (out of 1024) of the MinCOOL network's penultimate-layer units are greater than zero on between one and ten (out of 55000) training-set examples.*
 
 ---
@@ -110,20 +110,22 @@ These tables show for each network the numbers of dead units (on the training se
 Layer 8 of the CIFAR networks and Layer 5 of the MNIST networks are the layers just before the output layer. Layer 2 in the MNIST networks is the second convolutional layer. No other layers contained weights that were able to be safely forgotten.
 
 **_CIFAR_**
+
 | Output Layer | Layer-8 Dead Units | Weights Forgotten | Percent Reduction | Accuracy |
-| ------- | --: | ------: | -----: | -----: |
-| Total   | 512 | 3230778 | -      | -      |
-| Softmax | 10  | 62440   | 1.93%  | 0.7020 |
-| COOL    | 35  | 215425  | 6.67%  | 0.7396 |
-| MinCOOL | 161 | 990995  | 30.67% | 0.7457 |
+| ------- | ---: | ------: | -----: | -----: |
+| Total   | 512  | 3230778 | -      | -      |
+| Softmax | 10   | 62440   | 1.93%  | 0.7020 |
+| COOL    | 35   | 215425  | 6.67%  | 0.7396 |
+| MinCOOL | 161  | 990995  | 30.67% | 0.7457 |
 
 **_MNIST_**
+
 | Output Layer | Layer-5 Dead Units | Layer-2 Dead Channels | Weights Forgotten | Percent Reduction | Accuracy |
-| ------- | ---: | --: | ------: | -----: | -----: |
-| Total   | 1024 | 64  | 3274634 | -      | -      |
-| Softmax | 5    | 0   | 15735   | 0.48%  | 0.9930 |
-| COOL    | 166  | 0   | 522402  | 15.95% | 0.9942 |
-| MinCOOL | 407  | 10  | 1591169 | 48.59% | 0.9938 |
+| ------- | ---: | ---: | ------: | -----: | -----: |
+| Total   | 1024 | 64   | 3274634 | -      | -      |
+| Softmax | 5    | 0    | 15735   | 0.48%  | 0.9930 |
+| COOL    | 166  | 0    | 522402  | 15.95% | 0.9942 |
+| MinCOOL | 407  | 10   | 1591169 | 48.59% | 0.9938 |
 
 ---
 
