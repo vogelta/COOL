@@ -6,8 +6,6 @@ The [Competitive Overcomplete Output Layer](https://arxiv.org/abs/1609.02226) is
       
 Some pretrained models on the MNIST dataset are included with their parameters, weights and logs.
 
-Email: vogel.timothya (at) gmail.com
-
 ### Prerequisites
 
 - Python 2.7.12 or Python 3.5+
@@ -36,3 +34,5 @@ Includes Parameters, Weights (highest-scoring-step weights only) and Logs for:
 
 Full-size models take about 65 minutes on Intel® Core™ i5-2500K @ 3.30GHz. <br> 
 Transfer-learning models take about 4 minutes on the same.
+
+Contact: vogel.timothya (at) gmail.com
