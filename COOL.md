@@ -1,5 +1,5 @@
 <head>
-    <title>The Competitive Overcomplete Output Layer</title>
+    <title>"The Competitive Overcomplete Output Layer"</title>
     <!-- Google fonts -->
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
     <!-- mathjax -->
@@ -26,7 +26,7 @@ A critical point to note about how the COOL works is that the geometric mean (an
 
 **_Gradients on the Output-Layer Units_**
 
-_\(z_i\) is a unit of the fully-connected layer, with a value of \(y_i\) after the softmax operation_
+_\\(z_i\\) is a unit of the fully-connected layer, with a value of \\(y_i\\) after the softmax operation_
 
 | Layer   | Gradient |
 | ------- | -------- |
